@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Lesson with Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const video = document.getElementById("lessonVideo");
+            const quizSection = document.getElementById("quizSection");
+            const quizForm = document.getElementById("quizForm");
+            const progressBar = document.getElementById("progressBar");
+            const completionStatus = document.getElementById("completionStatus");
+            const storedProgress = localStorage.getItem("videoProgress");
+            const quizCompleted = localStorage.getItem("quizCompleted");
+
+            if (storedProgress) {
+                video.currentTime = storedProgress;
+            }
+
+            video.addEventListener("timeupdate", function () {
+                localStorage.setItem("videoProgress", video.currentTime);
+                const progress = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = progress + "%";
+                progressBar.innerText = Math.round(progress) + "%";
+            });
+
+            video.addEventListener("ended", function () {
+                quizSection.style.display = "block";
+            });
+
+            quizForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+                let score = 0;
+                const correctAnswers = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+                const userAnswers = [];
+                for (let i = 1; i <= 10; i++) {
+                    const answerInput = document.querySelector(`input[name="quizQuestion${i}"]`);
+                    if (answerInput) {
+                        userAnswers.push(answerInput.value.trim());
+                        if (answerInput.value.trim().toUpperCase() === correctAnswers[i - 1]) {
+                            score++;
+                        }
+                    }
+                }
+                localStorage.setItem("quizScore", score);
+                localStorage.setItem("userAnswers", JSON.stringify(userAnswers));
+                localStorage.setItem("quizCompleted", "true");
+                completionStatus.innerText = "Progress: Completed";
+                completionStatus.classList.add("text-success");
+                window.location.href = "score.html";
+            });
+
+            if (quizCompleted) {
+                completionStatus.innerText = "Progress: Completed";
+                completionStatus.classList.add("text-success");
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">VideoLearn</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="home.html">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="score.html">Socre</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+   <div class="container mt-5">
+    <h2 class="text-center mb-4">Video Lesson with Quiz</h2>
+
+    <div class="row">
+        <!-- Video Section (Left) -->
+        <div class="col-md-7">
+            <h4>Lesson Video</h4>
+            <div class="progress mb-3">
+                <div id="progressBar" class="progress-bar" style="width: 0%;">0%</div>
+            </div>
+            <video id="lessonVideo" width="100%" controls>
+                <source src="video1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p id="completionStatus" class="mt-2">Progress: Incomplete</p>
+        </div>
+
+        <!-- Quiz Section (Right) -->
+        <div class="col-md-5">
+            <div id="quizSection" class="mt-4 p-3 border rounded" style="display: none; background-color: #f8f9fa;">
+                <h4>Quiz</h4>
+                <form id="quizForm">
+                    <p>Answer the following questions:</p>
+                    <div class="mb-2">1. What does HTML stand for?<input type="text" name="quizQuestion1" class="form-control" required="required"></div>
+                    <div class="mb-2">2. What is the purpose of the head tag in HTML?<input type="text" name="quizQuestion2" class="form-control" required="required"></div>
+                    <div class="mb-2">3. What is the difference between div and span ?<input type="text" name="quizQuestion3" class="form-control" required="required"></div>
+                    <div class="mb-2">4. What is the function of the alt attribute in the img tag?<input type="text" name="quizQuestion4" class="form-control" required="required"></div>
+                    <div class="mb-2">5. What is the default display property of a p tag?<input type="text" name="quizQuestion5" class="form-control" required="required"></div>
+                    <div class="mb-2">6. How do you create a hyperlink in HTML?<input type="text" name="quizQuestion6" class="form-control" required="required"></div>
+                    <div class="mb-2">7. What is the difference between ordered and unordered lists in HTML?<input type="text" name="quizQuestion7" class="form-control" required="required"></div>
+                    <div class="mb-2">8. What is the purpose of the br tag?<input type="text" name="quizQuestion8" class="form-control" required="required"></div>
+                    <div class="mb-2">9. How do you add a comment in HTML?<input type="text" name="quizQuestion9" class="form-control" required="required"></div>
+                    <div class="mb-2">10. What is the purpose of the meta tag?<input type="text" name="quizQuestion10" class="form-control" required="required"></div>
+                    <button type="submit" class="btn btn-primary mt-2">Submit Quiz</button>
+                </form>
+            </div>
+        </div>
+    </div>
+   </div> 
+</body>
+</html>
